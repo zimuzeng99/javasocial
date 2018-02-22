@@ -6,16 +6,18 @@ import java.util.Optional;
 
 public class BoardCoarse implements Board {
 
-  private final int INITIAL_SIZE = 10;
+  private final int INITIAL_SIZE = 50;
   private Message[] messages = new Message[INITIAL_SIZE];
   private int size = 0;
 
   public boolean addMessage(Message message) {
     synchronized (this) {
+      while (message.getMessageId() >= messages.length) {
+        resize();
+      }
+
       if (!contains(message.getMessageId())) {
-        if (message.getMessageId() >= messages.length) {
-          resize();
-        }
+
         size++;
         messages[message.getMessageId()] = message;
         return true;
@@ -27,10 +29,11 @@ public class BoardCoarse implements Board {
   }
 
   private void resize() {
-    Message[] newArray = new Message[messages.length + INITIAL_SIZE];
+    Message[] newArray = new Message[2 * messages.length];
     for (int i = 0; i < messages.length; i++) {
       newArray[i] = messages[i];
     }
+    messages = newArray;
   }
 
   public int size() {
