@@ -13,10 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.Test;
-import socialnetwork.domain.Backlog;
-import socialnetwork.domain.Board;
-import socialnetwork.domain.Message;
-import socialnetwork.domain.Worker;
+import socialnetwork.domain.*;
 
 public class TestSuite {
 
@@ -71,7 +68,7 @@ public class TestSuite {
 
   private void runExperiment(ExperimentSettings settings) {
     //TODO replace by your Backlog implementation
-    Backlog backlog = null;
+    Backlog backlog = new BacklogCoarse();
     SocialNetwork socialNetwork = new SocialNetwork(backlog);
 
     Worker[] workers = new Worker[settings.nWorkers];
@@ -89,7 +86,7 @@ public class TestSuite {
     });
     Arrays.stream(userThreads).forEach(u -> {
       //TODO add your own board implementation
-      socialNetwork.register(u, null);
+      socialNetwork.register(u, new BoardCoarse());
       u.start();
     });
 
@@ -161,7 +158,6 @@ public class TestSuite {
       assertEquals("count for user " + tUser + " doesn't match!",expectedCount,actualCount);
     }
   }
-
 
   private void checkBoardOrdering(Board b) {
     List<Message> messages = b.getBoardSnapshot();
